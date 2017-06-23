@@ -9,6 +9,12 @@ There are a number of utility commands being showcased here.'''
 
 bot = commands.Bot(command_prefix='?', description=description)
 
+libs = list(sys.modules.keys())
+ln = int((len(libs)/2))
+libs.sort()
+for a in range(ln):
+    print('{0:30}\t{1}'.format(libs[a], libs[a+ln]))
+
 @bot.listen()
 async def on_ready():
     print('Logged in as')
@@ -64,13 +70,17 @@ async def choose(*choices : str):
 
 @bot.command(pass_context=True)
 async def msginfo(ctx):
-    print('this message id: {0}'.format(ctx.message.id))
-    print('this message content: {0}'.format(ctx.message.content))
     m1=bot.messages[-1]
     m2=bot.messages[-2]
+    m3=bot.messages[-3]
     print('bot.messages[-1] content: {0}'.format(m1.content))
     print('bot.messages[-2] content: {0}'.format(m2.content))
+    print('bot.messages[-3] content: {0}'.format(m3.content))
 
+@bot.command(pass_context=True)
+async def echo(ctx, txt:str=''):
+    await bot.say('\U000000A9')
+    await bot.say('\U0001F6E6')
 
 @bot.command(pass_context=True)
 async def polltst(ctx, *polargs : str):
@@ -90,13 +100,13 @@ async def polltst(ctx, *polargs : str):
     #msg = 'Hey @everyone, {0} has made a new poll\n\n{1}'.format(asker, title)    
     await bot.say(msg)
     
-    await bot.say('\U0001F44D')
-    await bot.say('\U0001F1E8 \U0001F1E6')
+    await bot.say('\U0001F9D1')
+    await bot.say('\U0001F1E8\U0001F1E6')
     a = len(ctx.message.server.emojis)
     b = random.randint(0,a)
-    c = bot.get_all_emojis()
-    l = True
     print("server.emojis length: {0}".format(a))
+    '''
+    l = True
     while l:
         try:
             print('trying iter\n')
@@ -104,7 +114,7 @@ async def polltst(ctx, *polargs : str):
         except StopIteration:
             print('StopIteration')
             l = False
-
+    '''
     #print('0: {0}'.format(ctx.message.server.emojis[0]))
     #print('{1}: {0}'.format(ctx.message.server.emojis[b], b))
 

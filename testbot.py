@@ -24,7 +24,7 @@ async def on_message(message):
 
     if message.content.startswith('!Hello'):
         var = '{0.author.nick}'.format(message) if message.author.nick else '{0.author.name}'.format(message)
-        msg = 'Hello {0}'.format(var)
+        msg = 'Hello {0.author.mention}'.format(message)
         await bot.send_message(message.channel, msg)
 """
 @bot.event
@@ -62,6 +62,54 @@ async def choose(*choices : str):
     """Chooses between multiple choices."""
     await bot.say(random.choice(choices))
 
+@bot.command(pass_context=True)
+async def msginfo(ctx):
+    print('this message id: {0}'.format(ctx.message.id))
+    print('this message content: {0}'.format(ctx.message.content))
+    m1=bot.messages[-1]
+    m2=bot.messages[-2]
+    print('bot.messages[-1] content: {0}'.format(m1.content))
+    print('bot.messages[-2] content: {0}'.format(m2.content))
+
+
+@bot.command(pass_context=True)
+async def polltst(ctx, *polargs : str):
+    """Polltst function w/o group"""
+    print('polltst')
+    await bot.say('polltst')
+    asker = '{0.author.nick}'.format(ctx.message) if ctx.message.author.nick else '{0.author.name}'.format(ctx.message)
+    #cntntr = '{0.content}'.format(ctx.message)
+    #cmd = ctx.command.clean_params
+    tmp = ' '
+    tmp = tmp.join(polargs)
+    arg = list(map(lambda s: s.strip(" "), tmp.split(",")))
+    title = arg.pop(0)
+    opts = {}
+    opts = opts.fromkeys(arg[0:],0)
+    msg = 'Hey , {0} has made a new poll\n\n{1}'.format(asker, title)    
+    #msg = 'Hey @everyone, {0} has made a new poll\n\n{1}'.format(asker, title)    
+    await bot.say(msg)
+    
+    await bot.say('\U0001F44D')
+    await bot.say('\U0001F1E8 \U0001F1E6')
+    a = len(ctx.message.server.emojis)
+    b = random.randint(0,a)
+    c = bot.get_all_emojis()
+    l = True
+    print("server.emojis length: {0}".format(a))
+    while l:
+        try:
+            print('trying iter\n')
+            print(next(c))
+        except StopIteration:
+            print('StopIteration')
+            l = False
+
+    #print('0: {0}'.format(ctx.message.server.emojis[0]))
+    #print('{1}: {0}'.format(ctx.message.server.emojis[b], b))
+
+
+
 @bot.group(pass_context=True)
 async def poll(ctx):
     """Poll function group"""
@@ -73,18 +121,26 @@ async def poll(ctx):
         print('Gonna check')
     elif ctx.invoked_subcommand is start:
         print('Gonna open')
-        asker = '{0.author.nick}'.format(ctx.message)
-        #global asker = '{0.author.nick}'.format(ctx.message) if ctx.message.author.nick else '{0.author.name}'.format(ctx.message)
+        asker = '{0.author.nick}'.format(ctx.message) if ctx.message.author.nick else '{0.author.name}'.format(ctx.message)
     else:
         print('Invalid subcommand')
 
 
 @poll.command()
-async def start(Title : str, *choices : str):
+async def start(polargs : str):
+    global title
+    global opts
+    print('Poll opened')
     await bot.say('Poll opened')
     #cntntr = '{0.content}'.format(ctx.message)
     #cmd = ctx.command.clean_params
-    await bot.say(asker)
+    arg = list(map(lambda s: s.strip(" "), polargs.split(",")))
+    title = arg.pop(0)
+    opts = {}
+    opts = opts.fromkeys(arg[0:],0)
+    msg = 'Hey @everyone, {0} has made a new poll\n\n{1}'.format(asker, title)    
+    await bot.say(msg)
+    
     #await bot.say(list(cmd.values()))
 
 @poll.command()
@@ -101,7 +157,6 @@ async def close():
 
 
 #    tst = 'When can people watch a movie?, Mon, Tue, Wed, Thr, Fri, Sat, Sun'
-#    tst = list(map(lambda s: s.strip(" "), tst.split(",")))
 
 #    for a in range(len(tst)):
 #        print("{0} \t{1}".format(a, tst[a]))

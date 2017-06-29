@@ -32,8 +32,7 @@ for row in soup.find('table').find_all('tr'):
     cols = row.find_all('td')
     cols = [e.text.strip() for e in cols]
     try:
-        tmp = cols[3][0]
-        if not tmp.isalnum():
+        if not cols[3][0].isalnum():
             continue
     except IndexError:
         pass
@@ -47,7 +46,7 @@ for row in soup.find('table').find_all('tr'):
                 _code.append(c.replace('+', '0000'))
             else:
                 _code.append(c.replace('+', '000'))
-        code = ' '.join(_code)
+        code = ','.join(_code)
         name = d['Name'].replace(' ', '_') \
                         .replace(':', '') \
                         .replace(',', '') \
@@ -58,10 +57,10 @@ for row in soup.find('table').find_all('tr'):
         #Replace the next line with the one below it if you want
         #a txt file formated as a proper OrderedDict. 
         #Note: You will also need to adjust the print statement
-        char = code.replace('U', '\\U') \
-                    .replace(' ','')
+        char = code.replace('U', '') \
+                    .replace(' ',',')
                 
-        #char = "u'" + code.replace('U', '\\U') + "',"
+        #char = "u'" + code.replace('U', '\\U') + "'"
 
         output[name] = char
 

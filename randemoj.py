@@ -1,7 +1,7 @@
 print(chr(0x1F600))
 emnum = 1975
 
-with open("justnumCommaDelim.txt") as fp:
+with open("emojinumcodes") as fp:
     for i, line in enumerate(fp):
         if i==(emnum-1):
             print('line {0}:\t {1}'.format(i+1,line.strip()))

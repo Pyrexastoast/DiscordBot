@@ -64,6 +64,7 @@ for row in soup.find('table').find_all('tr'):
 
         output[name] = char
 
-for name in sorted(output.keys()):
-    print("{0}".format(output[name]))
-    #print("    u':%s:': %s" % (name, output[name]))
+with open('emojinumcodes', 'w') as txt:
+    for name in sorted(output.keys()):
+        txt.write("{0}\n".format(output[name]))
+        #print("    u':%s:': %s" % (name, output[name]))

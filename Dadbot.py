@@ -4,7 +4,7 @@ import random
 import sys
 import asyncio
 
-description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot is the testing area for features that might be implemented in the Dadbot'''
+description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 bot = commands.Bot(command_prefix='!', description=description)
 
@@ -20,29 +20,6 @@ def random_emoji():
     except FileNotFoundError:
         print('emojinumcodes file not found')
     return hxcode
-
-'''
-@bot.command()
-async def allemoji():
-    cnt = 0
-    msg = str()
-    try:
-        with open('emojinumcodes') as f:
-            for i, line in enumerate(f):
-                hxcode = list(map(lambda x: chr(int(x, 16)), line.strip().split(',')))
-                hxcode = ''.join(hxcode)
-                msg+=hxcode       
-                if cnt < 10:
-                    cnt+=1
-                else:
-                    await bot.say(msg)
-                    msg = str()
-                    cnt = 0
-            if msg!=():
-                await bot.say(msg)
-    except FileNotFoundError:
-        print('emojinumcodes file not found')
-'''
 
 @bot.listen()
 async def on_ready():

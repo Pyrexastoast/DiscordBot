@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 """
 Extract the full list of emoji and names from the Unicode Consortium and
 apply as much formatting as possible so the codes can be dropped into the
@@ -44,16 +47,18 @@ for row in soup.find('table').find_all('tr'):
             elif cols[3].find('rainbow flag')!=-1:
                 pass
             elif cols[3].find('family')!=-1 and int(cols[0])>=1222:
-                #print(cols[0], '\t', cols[1], '\t', cols[3])
+                print(cols[0], '\t', cols[1], '\t', cols[3])
                 continue
             elif cols[3].find('family')==-1:
-                #print(cols[0], '\t', cols[1], '\t', cols[3])
+                print(cols[0], '\t', cols[1], '\t', cols[3])
                 continue
-    
     except IndexError:
         pass
+
+
     
     d = OrderedDict(zip(header, [e.strip() for e in cols]))
+    
     
     if d:
         _code = []
@@ -62,25 +67,16 @@ for row in soup.find('table').find_all('tr'):
                 _code.append(c.replace('+', '0000'))
             else:
                 _code.append(c.replace('+', '000'))
-        code = ','.join(_code)
+        code = ' '.join(_code)
         name = d['Name'].replace(' ', '_') \
                         .replace(':', '') \
                         .replace(',', '') \
                         .replace('“', '') \
                         .replace('”', '') \
                         .strip()
-
-        #Replace the next line with the one below it if you want
-        #a txt file formated as a proper OrderedDict. 
-        #Note: You will also need to adjust the print statement
-        char = code.replace('U', '') \
-                    .replace(' ',',')
-                
-        #char = "u'" + code.replace('U', '\\U') + "'"
-
+        char = "u'" + code.replace('U', '\\U') + "',"
         output[name] = char
 
-with open('emojinumcodes', 'w') as txt:
+with open('origemojicodes.txt', 'w') as txt:
     for name in sorted(output.keys()):
-        txt.write("{0}\n".format(output[name]))
-        #print("    u':%s:': %s" % (name, output[name]))
+        txt.write("    u':%s:': %s\n" % (name, output[name]))

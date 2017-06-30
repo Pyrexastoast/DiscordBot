@@ -7,13 +7,21 @@ import asyncio
 description = '''An example bot to showcase the discord.ext.commands extension module.
 There are a number of utility commands being showcased here.'''
 
-bot = commands.Bot(command_prefix='?', description=description)
+bot = commands.Bot(command_prefix='!', description=description)
 
-libs = list(sys.modules.keys())
-ln = int((len(libs)/2))
-libs.sort()
-for a in range(ln):
-    print('{0:30}\t{1}'.format(libs[a], libs[a+ln]))
+def random_emoji():
+    r = random.randint(1,2384)
+    try:
+        with open('emojinumcodes') as f:
+            for i, line in enumerate(f):
+                if i==r:
+                    hxcode = list(map(lambda x: chr(int(x, 16)), line.strip().split(',')))
+                    hxcode = ''.join(hxcode)
+                    print(hxcode, line)
+                    break
+    except FileNotFoundError:
+        print('emojinumcodes file not found')
+    return hxcode
 
 @bot.listen()
 async def on_ready():
@@ -40,6 +48,7 @@ async def on_message2(message):
         await asyncio.sleep(3)
         await bot.edit_message(msg, '40')
 """
+
 @bot.command()
 async def add(left : int, right : int):
     """Adds two numbers together"""
@@ -79,8 +88,33 @@ async def msginfo(ctx):
 
 @bot.command(pass_context=True)
 async def echo(ctx, txt:str=''):
-    await bot.say('\U000000A9')
-    await bot.say('\U0001F6E6')
+    a = chr(0x1F487)
+    b = chr(0x0200D)
+    c = chr(0x02642)
+    d = chr(0x0FE0F)
+     
+    await bot.say(a)
+    await bot.say(''.join((a,b)))
+    await bot.say(''.join((a,b,c)))
+    await bot.say(''.join((a,b,c,d)))
+
+@bot.command(pass_context=True)
+async def rreact(ctx):
+    target = bot.messages[-2]
+    await bot.delete_message(bot.messages[-1])
+    await bot.add_reaction(target, random_emoji())
+    await bot.add_reaction(target, random_emoji())
+
+@bot.command(pass_context=True)
+async def specreact(ctx, emoj:str):
+    target = bot.messages[-2]
+    await bot.delete_message(bot.messages[-1])
+    await bot.add_reaction(target, emoj)
+
+@bot.command()
+async def remoji():
+    rem = random_emoji()
+    await bot.say(rem)
 
 @bot.command(pass_context=True)
 async def polltst(ctx, *polargs : str):
@@ -90,35 +124,13 @@ async def polltst(ctx, *polargs : str):
     asker = '{0.author.nick}'.format(ctx.message) if ctx.message.author.nick else '{0.author.name}'.format(ctx.message)
     #cntntr = '{0.content}'.format(ctx.message)
     #cmd = ctx.command.clean_params
-    tmp = ' '
-    tmp = tmp.join(polargs)
+    tmp = ' '.join(polargs)
     arg = list(map(lambda s: s.strip(" "), tmp.split(",")))
     title = arg.pop(0)
-    opts = {}
-    opts = opts.fromkeys(arg[0:],0)
-    msg = 'Hey , {0} has made a new poll\n\n{1}'.format(asker, title)    
+    opts = list(arg[0:])
+    msg = 'Hey , {0} has made a new poll\n\n{1}'.format(asker, title)
     #msg = 'Hey @everyone, {0} has made a new poll\n\n{1}'.format(asker, title)    
-    await bot.say(msg)
-    
-    await bot.say('\U0001F9D1')
-    await bot.say('\U0001F1E8\U0001F1E6')
-    a = len(ctx.message.server.emojis)
-    b = random.randint(0,a)
-    print("server.emojis length: {0}".format(a))
-    '''
-    l = True
-    while l:
-        try:
-            print('trying iter\n')
-            print(next(c))
-        except StopIteration:
-            print('StopIteration')
-            l = False
-    '''
-    #print('0: {0}'.format(ctx.message.server.emojis[0]))
-    #print('{1}: {0}'.format(ctx.message.server.emojis[b], b))
-
-
+    await bot.say(msg) 
 
 @bot.group(pass_context=True)
 async def poll(ctx):

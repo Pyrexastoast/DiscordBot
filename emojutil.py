@@ -26,7 +26,7 @@ soup = BeautifulSoup(response.text, "html.parser")
 header = [
     'Count', 'Code', 'Sample', 'Name'
 ]
-
+omit = [1199, 1207, 1203, 2602, 1440, 2248, 2249, ]
 output = {}
 for row in soup.find('table').find_all('tr'):
     cols = row.find_all('td')
@@ -49,7 +49,13 @@ for row in soup.find('table').find_all('tr'):
             elif cols[3].find('family')==-1:
                 #print(cols[0], '\t', cols[1], '\t', cols[3])
                 continue
-    
+        
+        if cols[3].find('keycap')!=-1:
+                continue
+        
+        if int(cols[0]) in omit:
+            continue
+
     except IndexError:
         pass
     

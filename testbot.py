@@ -10,18 +10,40 @@ There are a number of utility commands being showcased here.'''
 bot = commands.Bot(command_prefix='!', description=description)
 
 def random_emoji():
-    r = random.randint(1,2384)
+    r = random.randint(1,1786)
     try:
         with open('emojinumcodes') as f:
             for i, line in enumerate(f):
                 if i==r:
                     hxcode = list(map(lambda x: chr(int(x, 16)), line.strip().split(',')))
                     hxcode = ''.join(hxcode)
-                    print(hxcode, line)
                     break
     except FileNotFoundError:
         print('emojinumcodes file not found')
     return hxcode
+
+'''
+@bot.command()
+async def allemoji():
+    cnt = 0
+    msg = str()
+    try:
+        with open('emojinumcodes') as f:
+            for i, line in enumerate(f):
+                hxcode = list(map(lambda x: chr(int(x, 16)), line.strip().split(',')))
+                hxcode = ''.join(hxcode)
+                msg+=hxcode       
+                if cnt < 10:
+                    cnt+=1
+                else:
+                    await bot.say(msg)
+                    msg = str()
+                    cnt = 0
+            if msg!=():
+                await bot.say(msg)
+    except FileNotFoundError:
+        print('emojinumcodes file not found')
+'''
 
 @bot.listen()
 async def on_ready():
@@ -40,14 +62,22 @@ async def on_message(message):
         var = '{0.author.nick}'.format(message) if message.author.nick else '{0.author.name}'.format(message)
         msg = 'Hello {0.author.mention}'.format(message)
         await bot.send_message(message.channel, msg)
-"""
-@bot.event
-async def on_message2(message):
-    if message.content.startswith('!editme'):
-        msg = await bot.send_message(message.author, '10')
-        await asyncio.sleep(3)
-        await bot.edit_message(msg, '40')
-"""
+
+@bot.command(pass_context=True)
+async def clean(ctx):
+    """Deletes the previous 100 bot messages"""
+    
+    def is_me(m):
+        return m.author == bot.user
+
+    deleted = await bot.purge_from(ctx.message.channel, limit=100, check=is_me)
+    await bot.say('Deleted {} message(s).'.format(len(deleted)))
+
+@bot.command(pass_context=True)
+async def firebomb(ctx):
+    """Deletes the previous 100 messages regardless of user"""
+    deleted = await bot.purge_from(ctx.message.channel, limit=100)
+    await bot.say('Deleted {} message(s).'.format(len(deleted)))
 
 @bot.command()
 async def add(left : int, right : int):
@@ -113,83 +143,35 @@ async def specreact(ctx, emoj:str):
 
 @bot.command()
 async def remoji():
-    rem = random_emoji()
+    rem = list()
+    for i in range(5):
+        rem.append(random_emoji())
     await bot.say(rem)
 
 @bot.command(pass_context=True)
-async def polltst(ctx, *polargs : str):
-    """Polltst function w/o group"""
-    print('polltst')
-    await bot.say('polltst')
+async def poll(ctx, *polargs : str):
+    """Makes a poll in the current chat.
+
+    Enter your question, followed by the different choices.
+    Separate the question and all the options with commas.
+    """
     asker = '{0.author.nick}'.format(ctx.message) if ctx.message.author.nick else '{0.author.name}'.format(ctx.message)
-    #cntntr = '{0.content}'.format(ctx.message)
-    #cmd = ctx.command.clean_params
     tmp = ' '.join(polargs)
     arg = list(map(lambda s: s.strip(" "), tmp.split(",")))
     title = arg.pop(0)
     opts = list(arg[0:])
-    msg = 'Hey , {0} has made a new poll\n\n{1}'.format(asker, title)
-    #msg = 'Hey @everyone, {0} has made a new poll\n\n{1}'.format(asker, title)    
-    await bot.say(msg) 
-
-@bot.group(pass_context=True)
-async def poll(ctx):
-    """Poll function group"""
-    global asker
-    await bot.say('Poll goes here')
-    if ctx.invoked_subcommand is close:
-        print('Gonna close')
-    elif ctx.invoked_subcommand is check:
-        print('Gonna check')
-    elif ctx.invoked_subcommand is start:
-        print('Gonna open')
-        asker = '{0.author.nick}'.format(ctx.message) if ctx.message.author.nick else '{0.author.name}'.format(ctx.message)
-    else:
-        print('Invalid subcommand')
-
-
-@poll.command()
-async def start(polargs : str):
-    global title
-    global opts
-    print('Poll opened')
-    await bot.say('Poll opened')
-    #cntntr = '{0.content}'.format(ctx.message)
-    #cmd = ctx.command.clean_params
-    arg = list(map(lambda s: s.strip(" "), polargs.split(",")))
-    title = arg.pop(0)
-    opts = {}
-    opts = opts.fromkeys(arg[0:],0)
-    msg = 'Hey @everyone, {0} has made a new poll\n\n{1}'.format(asker, title)    
-    await bot.say(msg)
+    randemoj = []
+    for a in opts:
+        randemoj.append(random_emoji())
+    print(randemoj) 
+    #msg = 'Hey , {0} has made a new poll\n\n{1}'.format(asker, title)
+    msg = 'Hey @everyone, {0} has made a new poll\n\n{1}'.format(asker, title)
+    print(opts)
+    for i,choice in enumerate(opts):
+       msg = '\n'.join((msg, '{0}: {1}'.format(randemoj[i], choice)))
     
-    #await bot.say(list(cmd.values()))
-
-@poll.command()
-async def check():
-    await bot.say('Checking poll')
-    await bot.say(asker)
-
-@poll.command()
-async def close():
-    await bot.say('Closing poll')
-    await bot.say(asker)
-
-
-
-
-#    tst = 'When can people watch a movie?, Mon, Tue, Wed, Thr, Fri, Sat, Sun'
-
-#    for a in range(len(tst)):
-#        print("{0} \t{1}".format(a, tst[a]))
-
-#    print(tst[-1])
-#    p = {}
-#    p=p.fromkeys(tst[1:], 0)
-#    p['Question']=tst[0]
-
-
-    #await bot.say(ctx.message.)
-    #asker = '{0.author.nick}'.format(message) if message.author.nick else '{0.author.name}'.format(message)
-    #msg = 'Hey {}, {0.author.nick} has made a poll'.format(message)    
+    m = await bot.say(msg) 
+    for e in randemoj:
+        await bot.add_reaction(m, e)
+    
 bot.run('MzI1NzE0OTQ2OTE2ODc2Mjg4.DCci9A.zZAe3yu8IxiboUtTAnYYq206XSg')

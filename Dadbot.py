@@ -5,9 +5,14 @@ import random
 import sys
 import asyncio
 
-DadBot_token = 'MzMwNTEzNjY3MjczNjU0Mjcy.DDiGew.hzz0ArO4yDqpHtqAGcFJj0Q2S-c'
-testbot_token = 'MzI1NzE0OTQ2OTE2ODc2Mjg4.DCci9A.zZAe3yu8IxiboUtTAnYYq206XSg'
+with open('auth_token_DadBot', 'r') as auth:
+    try:
+        token=auth.read()
+    except FileNotFoundError:
+        print('auth_token file not found')
+        raise
 
+   
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 bot = commands.Bot(command_prefix='!', description=description)
@@ -213,4 +218,4 @@ async def poll(ctx, *polargs : str):
 #   more for developing features and stuff. If you want to log in as testbot
 #   please us testDadbot.py instead of this program
 #bot.run(testbot_token)
-bot.run(DadBot_token)
+bot.run(token)

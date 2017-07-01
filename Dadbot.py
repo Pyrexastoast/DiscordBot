@@ -12,12 +12,14 @@ description = '''A discord bot made and implemented (so far) by Alex Miranker. T
 
 bot = commands.Bot(command_prefix='!', description=description)
 
+
 #Only takes Message.author as argument. Will return
 #   their nickname on that server if they have one.
 #   If not, it will return their username.
 def handle_nick(person):
     display_name = '{0}'.format(person.nick) if person.nick else '{0}'.format(person.name)
     return display_name
+
 
 #Returns a random emoji that is guaranteed to be supported
 #   across discords different apps and can be used as a reaction.
@@ -35,17 +37,28 @@ def random_emoji():
         print('emojinumcodes file not found')
     return hxcode
 
+
+#Executes this block when the bot is done preparing data recieved
+#   from Discord. Usually after login is successful.
 @bot.listen()
 async def on_ready():
-    greeting = 'Hello, World!\nPlease use the command \"{0}help\" if you want to know what I can do.\nDon\'t forget to put a \"{0}\" in front of any commands or I won\'t see them!'.format(bot.command_prefix) 
+    
+    #Prints some information to the command line
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    
+    #This is the greeting that the bot says in chat when you log in
+    greeting = 'Hello, World!\nPlease use the command \"{0}help\" if you want to know what I can do.\nDon\'t forget to put a \"{0}\" in front of any commands or I won\'t see them!'.format(bot.command_prefix) 
+    
+    #Cycle through all the servers that DadBot is a member and
+    #   print the greeting in the default chat
     for serv in bot.servers:
         print("Now messaging:\t", serv.name)
         await bot.send_message(serv.default_channel, greeting)
 
+#Executes this block whenever anyone messages the chat.
 @bot.listen()
 async def on_message(message):
     #Prevents the bot from replying to itself
@@ -69,7 +82,8 @@ async def on_message(message):
         obj = message.content[3:]
         dadjk = 'Nice to meet you, {0}. I\'m DadBot'.format(obj.title())
         await bot.send_message(message.channel, dadjk)
-    
+
+
 @bot.command(pass_context=True, hidden=True)
 async def clean(ctx):
     """Deletes the previous 100 bot messages
@@ -92,10 +106,12 @@ async def firebomb(ctx):
     deleted = await bot.purge_from(ctx.message.channel, limit=100)
     await bot.say('Deleted {} message(s).'.format(len(deleted)))
 
+
 @bot.command()
 async def add(left : int, right : int):
     """Adds two numbers together"""
     await bot.say(left + right)
+
 
 @bot.command()
 async def repeat(times : int, content = 'repeating...'):
@@ -104,11 +120,14 @@ async def repeat(times : int, content = 'repeating...'):
     Will only repeat up to 10 times
     """
     
+    #Set a limit of 10 repetitions
     if times>10:
         times = 10
-
+    
+    #Perform the repetition
     for i in range(times):
         await bot.say(content)
+
 
 @bot.command()
 async def roll(dice : str):
@@ -122,10 +141,12 @@ async def roll(dice : str):
     result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
     await bot.say(result)
 
+
 @bot.command()
 async def choose(*choices : str):
     """Chooses between multiple choices."""
     await bot.say(random.choice(choices))
+
 
 @bot.command(pass_context=True)
 async def poll(ctx, *polargs : str):
@@ -186,6 +207,9 @@ async def poll(ctx, *polargs : str):
     #   so that people don't have to find the specific emojis themselves
     for e in randemoj:
         await bot.add_reaction(m, e)
-    
+
+
+#These lines toggle which of my bots this will log in as. Testbot is more
+#   for developing features and stuff.
 #bot.run(testbot_token)
 bot.run(DadBot_token)

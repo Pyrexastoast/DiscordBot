@@ -211,5 +211,5 @@ async def poll(ctx, *polargs : str):
 
 #These lines toggle which of my bots this will log in as. Testbot is more
 #   for developing features and stuff.
-#bot.run(testbot_token)
-bot.run(DadBot_token)
+bot.run(testbot_token)
+#bot.run(DadBot_token)

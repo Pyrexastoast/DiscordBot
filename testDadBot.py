@@ -212,5 +212,5 @@ async def poll(ctx, *polargs : str):
 #These lines toggle which of my bots this will log in as. Testbot_token is 
 #   more for developing features and stuff. If you want to log in as testbot
 #   please us testDadbot.py instead of this program
-#bot.run(testbot_token)
-bot.run(DadBot_token)
+bot.run(testbot_token)
+#bot.run(DadBot_token)

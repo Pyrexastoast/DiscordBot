@@ -48,15 +48,15 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+
+@bot.command(pass_context=True, hidden=True)
+async def greet(ctx):
+    await bot.delete_message(ctx.message)
     
     #This is the greeting that the bot says in chat when you log in
     greeting = 'Hello, World!\nPlease use the command \"{0}help\" if you want to know what I can do.\nDon\'t forget to put a \"{0}\" in front of any commands or I won\'t see them!'.format(bot.command_prefix) 
-    
-    #Cycle through all the servers that DadBot is a member and
-    #   print the greeting in the default chat
-    for serv in bot.servers:
-        print("Now messaging:\t", serv.name)
-        await bot.send_message(serv.default_channel, greeting)
+
+    await bot.say(greeting)
 
 #Executes this block whenever anyone messages the chat.
 @bot.listen()

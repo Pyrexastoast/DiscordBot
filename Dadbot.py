@@ -5,13 +5,6 @@ import random
 import sys
 import asyncio
 
-with open('auth_token_DadBot', 'r') as auth:
-    try:
-        token=auth.read()
-    except FileNotFoundError:
-        print('auth_token file not found')
-        raise
-
    
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
@@ -214,8 +207,15 @@ async def poll(ctx, *polargs : str):
         await bot.add_reaction(m, e)
 
 
-#These lines toggle which of my bots this will log in as. Testbot_token is 
-#   more for developing features and stuff. If you want to log in as testbot
-#   please us testDadbot.py instead of this program
-#bot.run(testbot_token)
+#These lines are how the bot get its Auth token. For security 
+#   reasons, the auth tokens aren't kept in this file and are 
+#   not tracked on the git repo. Please substitute your own file 
+#   or your own token. 
+with open('auth_token_DadBot.tmp', 'r') as auth:
+    try:
+        token=auth.read().strip()
+    except FileNotFoundError:
+        print('auth_token file not found')
+        raise
+
 bot.run(token)

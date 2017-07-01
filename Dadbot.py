@@ -5,6 +5,9 @@ import random
 import sys
 import asyncio
 
+DadBot_token = 'MzMwNTEzNjY3MjczNjU0Mjcy.DDiGew.hzz0ArO4yDqpHtqAGcFJj0Q2S-c'
+testbot_token = 'MzI1NzE0OTQ2OTE2ODc2Mjg4.DCci9A.zZAe3yu8IxiboUtTAnYYq206XSg'
+
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 bot = commands.Bot(command_prefix='!', description=description)
@@ -34,13 +37,14 @@ def random_emoji():
 
 @bot.listen()
 async def on_ready():
+    greeting = 'Hello, World!\nPlease use the command \"{0}help\" if you want to know what I can do.\nDon\'t forget to put a \"{0}\" in front of any commands or I won\'t see them!'.format(bot.command_prefix) 
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
     print('------')
     for serv in bot.servers:
         print("Now messaging:\t", serv.name)
-        await bot.send_message(serv.default_channel, "Hello, World!")
+        await bot.send_message(serv.default_channel, greeting)
 
 @bot.listen()
 async def on_message(message):
@@ -55,15 +59,15 @@ async def on_message(message):
     #   This needs neatening into one if statement.
     if message.content.startswith('I am ') or message.content.startswith('i am '):
         obj = message.content[5:]
-        dadjk = 'Nice to meet you, {0}. I\'m Dadbot'.format(obj.title())
+        dadjk = 'Nice to meet you, {0}. I\'m DadBot'.format(obj.title())
         await bot.send_message(message.channel, dadjk)
     if message.content.startswith('I\'m ') or message.content.startswith('i\'m '):
         obj = message.content[4:]
-        dadjk = 'Nice to meet you, {0}. I\'m Dadbot'.format(obj.title())
+        dadjk = 'Nice to meet you, {0}. I\'m DadBot'.format(obj.title())
         await bot.send_message(message.channel, dadjk)
     if message.content.startswith('Im ') or message.content.startswith('im '):
         obj = message.content[3:]
-        dadjk = 'Nice to meet you, {0}. I\'m Dadbot'.format(obj.title())
+        dadjk = 'Nice to meet you, {0}. I\'m DadBot'.format(obj.title())
         await bot.send_message(message.channel, dadjk)
     
 @bot.command(pass_context=True, hidden=True)
@@ -183,4 +187,5 @@ async def poll(ctx, *polargs : str):
     for e in randemoj:
         await bot.add_reaction(m, e)
     
-bot.run('MzI1NzE0OTQ2OTE2ODc2Mjg4.DCci9A.zZAe3yu8IxiboUtTAnYYq206XSg')
+#bot.run(testbot_token)
+bot.run(DadBot_token)

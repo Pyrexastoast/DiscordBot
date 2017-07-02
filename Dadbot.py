@@ -8,7 +8,26 @@ import asyncio
    
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
-bot = commands.Bot(command_prefix='!', description=description)
+
+auth_filename = 'auth_token_testPollBot.tmp'
+
+if auth_filename == 'auth_token_DadBot.tmp':
+    pref = '!'
+else:
+    pref = '?'
+
+#These lines are how the bot get its Auth token. For security 
+#   reasons, the auth tokens aren't kept in this file and are 
+#   not tracked on the git repo. Please substitute your own file 
+#   or your own token. 
+with open(auth_filename, 'r') as auth:
+    try:
+        token=auth.read().strip()
+    except FileNotFoundError:
+        print('auth_token file not found')
+        raise
+
+bot = commands.Bot(command_prefix=pref, description=description)
 
 
 #Only takes Message.author as argument. Will return
@@ -62,26 +81,21 @@ async def on_message(message):
     #Prevents the bot from replying to itself
     if message.author == bot.user:
         return
-    
+
     #Looks for posts that start with "I am" or "I'm" and flips them around
     #   For example:
     #   If user posts: "I'm hungry"
     #   Bot will post: "Nice to meet you Hungry, I'm Dadbot"
-    #   This needs neatening into one if statement.
-    if message.content.startswith('I am ') or message.content.startswith('i am '):
-        obj = message.content[5:]
-        dadjk = 'Nice to meet you, {0}. I\'m DadBot'.format(obj.title())
-        await bot.send_message(message.channel, dadjk)
-    if message.content.startswith('I\'m ') or message.content.startswith('i\'m '):
-        obj = message.content[4:]
-        dadjk = 'Nice to meet you, {0}. I\'m DadBot'.format(obj.title())
-        await bot.send_message(message.channel, dadjk)
-    if message.content.startswith('Im ') or message.content.startswith('im '):
-        obj = message.content[3:]
-        dadjk = 'Nice to meet you, {0}. I\'m DadBot'.format(obj.title())
-        await bot.send_message(message.channel, dadjk)
-
-
+    trigger_Im_Dad = ['I am ', 'i am ', 'I\'m ', 'i\'m ', 'Im ', 'im ']
+    for trig in trigger_Im_Dad:
+        if message.content.startswith(trig):
+            print('triggered by {}'.format(trig))
+            you = message.content.replace(trig, '', 1)
+            print('There are {} words after trigger'.format(len(you.split(' '))))
+            if len(you.split(' '))<3:
+                im_Dad = 'Nice to meet you, {0}. I\'m DadBot'.format(you.title())
+                await bot.send_message(message.channel, im_Dad) 
+    
 @bot.command(pass_context=True, hidden=True)
 async def clean(ctx):
     """Deletes the previous 100 bot messages
@@ -206,16 +220,5 @@ async def poll(ctx, *polargs : str):
     for e in randemoj:
         await bot.add_reaction(m, e)
 
-
-#These lines are how the bot get its Auth token. For security 
-#   reasons, the auth tokens aren't kept in this file and are 
-#   not tracked on the git repo. Please substitute your own file 
-#   or your own token. 
-with open('auth_token_DadBot.tmp', 'r') as auth:
-    try:
-        token=auth.read().strip()
-    except FileNotFoundError:
-        print('auth_token file not found')
-        raise
 
 bot.run(token)

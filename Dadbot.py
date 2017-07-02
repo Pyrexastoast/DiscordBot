@@ -89,9 +89,7 @@ async def on_message(message):
     trigger_Im_Dad = ['I am ', 'i am ', 'I\'m ', 'i\'m ', 'Im ', 'im ']
     for trig in trigger_Im_Dad:
         if message.content.startswith(trig):
-            print('triggered by {}'.format(trig))
             you = message.content.replace(trig, '', 1)
-            print('There are {} words after trigger'.format(len(you.split(' '))))
             if len(you.split(' '))<3:
                 im_Dad = 'Nice to meet you, {0}. I\'m DadBot'.format(you.title())
                 await bot.send_message(message.channel, im_Dad) 

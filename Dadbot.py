@@ -110,6 +110,34 @@ async def on_message(message):
 async def echo(ctx):
     print(ctx.message.content)
 
+
+@bot.command(pass_context=True)
+async def warmfuzzy(ctx, *usr:str):   
+    await bot.delete_message(ctx.message)
+    users = list(bot.get_all_members())
+    if usr:
+        usr = ' '.join(usr)
+        disp_names = list(map(lambda x: x.display_name, users))
+        names = list(map(lambda x: x.name, users))
+        if usr in disp_names:
+            target = users[disp_names.index(usr)]
+        elif usr in names:
+            target = users[names.index(usr)]
+        else:
+            target = ctx.message.author
+    else:
+        users.remove(ctx.message.author)
+        target = random.choice(users)
+    msg = "Hello! {} from \"{}\"  wanted me to tell you that you are really awesome!'\n'They are sending well wishes and good vibes your way!".format(ctx.message.author.display_name, ctx.message.server)
+    msg2 = "You just sent a warm fuzzy to {} from the \"{}\" server!\nYou are such a sweet person.\nI\'m proud of you.".format(target.name, ctx.message.server)
+    await bot.send_message(ctx.message.author, msg2)
+    if target == bot.user:
+        msg = "Awwww! You are too sweet. Thank you!"
+        print('{} from \"{}\" sent me a Warm Fuzzy!'.format(ctx.message.author.display_name, ctx.message.server))
+        await bot.send_message(ctx.message.author, msg)
+    else:
+        await bot.send_message(target, msg)
+
 @bot.command(pass_context=True, hidden=True)
 async def clean(ctx):
     """Deletes the previous 100 bot messages

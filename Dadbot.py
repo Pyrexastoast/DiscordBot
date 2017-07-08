@@ -9,7 +9,7 @@ import asyncio
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 
-auth_filename = 'auth_token_DadBot.tmp'
+auth_filename = 'auth_token_testPollBot.tmp'
 
 if auth_filename == 'auth_token_DadBot.tmp':
     pref = '!'
@@ -129,11 +129,11 @@ async def warmfuzzy(ctx, *usr:str):
     else:
         users.remove(ctx.message.author)
         target = random.choice(users)
-    msg = "Hello! {} from \"{}\"  wanted me to tell you that you are really awesome!'\n'They are sending well wishes and good vibes your way!".format(ctx.message.author.display_name, ctx.message.server)
-    msg2 = "You just sent a warm fuzzy to {} from the \"{}\" server!\nYou are such a sweet person.\nI\'m proud of you.".format(target.name, ctx.message.server)
     if target == None:
         await bot.send_message(ctx.message.author, 'Uh. Oh. I couldn\'t find that person on this server. I\'m still proud of you')
     else:
+        msg = "Hello! {} from \"{}\"  wanted me to tell you that you are really awesome!'\n'They are sending well wishes and good vibes your way!".format(ctx.message.author.display_name, ctx.message.server)
+        msg2 = "You just sent a warm fuzzy to {} from the \"{}\" server!\nYou are such a sweet person.\nI\'m proud of you.".format(target.name, ctx.message.server)
         await bot.send_message(ctx.message.author, msg2)
 
     if target == bot.user:

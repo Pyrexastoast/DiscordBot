@@ -63,7 +63,6 @@ def get_joke():
             for i, line in enumerate(jokes):
                 if i==r:
                     jok = list(line.strip().split('_'))
-                    print(jok)
                     return jok
     except FileNotFoundError:
         print('No sense of humor detected')
@@ -182,6 +181,7 @@ async def dadjoke():
     #   has a punchline. If it does, it separates the punchline from
     #   the main body of the joke.
     joke = get_joke()
+
     if len(joke)>1:
         punchline = joke.pop()
     msg = '\n'.join(joke)

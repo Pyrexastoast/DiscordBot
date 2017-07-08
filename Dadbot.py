@@ -9,7 +9,7 @@ import asyncio
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 
-auth_filename = 'auth_token_testPollBot.tmp'
+auth_filename = 'auth_token_DadBot.tmp'
 
 if auth_filename == 'auth_token_DadBot.tmp':
     pref = '!'

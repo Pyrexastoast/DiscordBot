@@ -9,7 +9,7 @@ import asyncio
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 
-auth_filename = 'auth_token_DadBot.tmp'
+auth_filename = 'auth_token_testPollBot.tmp'
 
 if auth_filename == 'auth_token_DadBot.tmp':
     pref = '!'
@@ -93,14 +93,22 @@ async def on_message(message):
     #   If user posts: "I'm hungry"
     #   Bot will post: "Nice to meet you Hungry, I'm Dadbot"
     trigger_Im_Dad = ['I am ', 'i am ', 'I\'m ', 'i\'m ', 'Im ', 'im ']
-    cont = message.content.split('.')
+    cont = map(lambda x: x.strip(' .'), message.content.split('.'))
     for sentence in cont:
         for trig in trigger_Im_Dad:
-            if sentence.strip().startswith(trig):
+            if sentence.startswith(trig):
                 you = sentence.replace(trig, '', 1)
                 if len(you.split(' '))<3:
-                    im_Dad = 'Nice to meet you, {0}. I\'m DadBot'.format(you.title())
+                    im_Dad = 'Nice to meet you, {0}. My name is DadBot'.format(you.title())
                     await bot.send_message(message.channel, im_Dad) 
+    
+    if message.content.find('<@{}>'.format(bot.user.id)) != -1:
+        msg = 'Thanks for the mention, {}.\nYou make me so proud!\nI support you and I love you!'.format(message.author.display_name)
+        await bot.send_message(message.channel, msg)
+
+@bot.command(pass_context=True)
+async def echo(ctx):
+    print(ctx.message.content)
 
 @bot.command(pass_context=True, hidden=True)
 async def clean(ctx):

@@ -125,13 +125,17 @@ async def warmfuzzy(ctx, *usr:str):
         elif usr in names:
             target = users[names.index(usr)]
         else:
-            target = ctx.message.author
+            target = None
     else:
         users.remove(ctx.message.author)
         target = random.choice(users)
     msg = "Hello! {} from \"{}\"  wanted me to tell you that you are really awesome!'\n'They are sending well wishes and good vibes your way!".format(ctx.message.author.display_name, ctx.message.server)
     msg2 = "You just sent a warm fuzzy to {} from the \"{}\" server!\nYou are such a sweet person.\nI\'m proud of you.".format(target.name, ctx.message.server)
-    await bot.send_message(ctx.message.author, msg2)
+    if target == None:
+        await bot.send_message(ctx.message.author, 'Uh. Oh. I couldn\'t find that person on this server. I\'m still proud of you')
+    else:
+        await bot.send_message(ctx.message.author, msg2)
+
     if target == bot.user:
         msg = "Awwww! You are too sweet. Thank you!"
         print('{} from \"{}\" sent me a Warm Fuzzy!'.format(ctx.message.author.display_name, ctx.message.server))

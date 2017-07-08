@@ -29,7 +29,6 @@ with open(auth_filename, 'r') as auth:
 
 bot = commands.Bot(command_prefix=pref, description=description)
 
-
 #Only takes Message.author as argument. Will return
 #   their nickname on that server if they have one.
 #   If not, it will return their username.
@@ -37,12 +36,11 @@ def handle_nick(person):
     display_name = '{0}'.format(person.nick) if person.nick else '{0}'.format(person.name)
     return display_name
 
-
 #Returns a random emoji that is guaranteed to be supported
 #   across discords different apps and can be used as a reaction.
 #   (probably)
 def random_emoji():
-    r = random.randint(1,1786)
+    r = random.randint(0,1785)
     try:
         with open('emojinumcodes') as f:
             for i, line in enumerate(f):
@@ -54,6 +52,21 @@ def random_emoji():
         print('emojinumcodes file not found')
     return hxcode
 
+#Returns a random joke from the text file of jokes that I have
+#   formatted. It splits the joke into lines with the last line
+#   being the punchline so that the dadjoke command can handle
+#   that line differently
+def get_joke():
+    r = random.randint(0,114)
+    try:
+        with open('DadBot_Humor.txt') as jokes:
+            for i, line in enumerate(jokes):
+                if i==r:
+                    jok = list(line.strip().split('_'))
+                    print(jok)
+                    return jok
+    except FileNotFoundError:
+        print('No sense of humor detected')
 
 #Executes this block when the bot is done preparing data recieved
 #   from Discord. Usually after login is successful.
@@ -157,6 +170,36 @@ async def choose(*choices : str):
     """Chooses between multiple choices."""
     await bot.say(random.choice(choices))
 
+@bot.command()
+async def dadjoke():
+    """DadBot tells a joke!
+    
+    Tells a joke but waits for you to respond before saying the punchline.
+    He will say the punchline if no one responds for 8 seconds.
+    """
+    
+    #Gets the joke from the get_joke funtion and checks to see if it
+    #   has a punchline. If it does, it separates the punchline from
+    #   the main body of the joke.
+    joke = get_joke()
+    if len(joke)>1:
+        punchline = joke.pop()
+    msg = '\n'.join(joke)
+    
+    #Says the joke
+    await bot.say(msg)
+    
+    #If there is a punchline, waits for one second to stop from reacting 
+    #   to his own message, then looks for any reply in the discord 
+    #   channel. When a reply is detected, or after 8 seconds, the 
+    #   punchline gets messaged to the channel.
+    if punchline:
+        await asyncio.sleep(1)
+        response = await bot.wait_for_message(timeout=8)
+        if response:
+            await bot.say(punchline)
+        else:
+            await bot.say(punchline)
 
 @bot.command(pass_context=True)
 async def poll(ctx, *polargs : str):

@@ -9,7 +9,7 @@ import asyncio
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 
-auth_filename = 'auth_token_DadBot.tmp'
+auth_filename = 'auth_token_testPollBot.tmp'
 
 if auth_filename == 'auth_token_DadBot.tmp':
     pref = '!'
@@ -28,13 +28,6 @@ with open(auth_filename, 'r') as auth:
         raise
 
 bot = commands.Bot(command_prefix=pref, description=description)
-
-#Only takes Message.author as argument. Will return
-#   their nickname on that server if they have one.
-#   If not, it will return their username.
-def handle_nick(person):
-    display_name = '{0}'.format(person.nick) if person.nick else '{0}'.format(person.name)
-    return display_name
 
 #Returns a random emoji that is guaranteed to be supported
 #   across discords different apps and can be used as a reaction.
@@ -93,19 +86,25 @@ async def on_message(message):
     #Prevents the bot from replying to itself
     if message.author == bot.user:
         return
+    
 
     #Looks for posts that start with "I am" or "I'm" and flips them around
     #   For example:
     #   If user posts: "I'm hungry"
     #   Bot will post: "Nice to meet you Hungry, I'm Dadbot"
     trigger_Im_Dad = ['I am ', 'i am ', 'I\'m ', 'i\'m ', 'Im ', 'im ']
-    for trig in trigger_Im_Dad:
-        if message.content.startswith(trig):
-            you = message.content.replace(trig, '', 1)
-            if len(you.split(' '))<3:
-                im_Dad = 'Nice to meet you, {0}. I\'m DadBot'.format(you.title())
-                await bot.send_message(message.channel, im_Dad) 
+    cont = message.content.split('.')
+    for sentence in cont:
+        for trig in trigger_Im_Dad:
+            if sentence.strip().startswith(trig):
+                you = sentence.replace(trig, '', 1)
+                if len(you.split(' '))<3:
+                    im_Dad = 'Nice to meet you, {0}. I\'m DadBot'.format(you.title())
+                    await bot.send_message(message.channel, im_Dad) 
     
+    yield from self.process_commands(message)
+    
+
 @bot.command(pass_context=True, hidden=True)
 async def clean(ctx):
     """Deletes the previous 100 bot messages
@@ -163,7 +162,6 @@ async def roll(dice : str):
     result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
     await bot.say(result)
 
-
 @bot.command()
 async def choose(*choices : str):
     """Chooses between multiple choices."""
@@ -216,9 +214,10 @@ async def poll(ctx, *polargs : str):
     #   message that invokes this command
     #await bot.delete_message(ctx.message)      
     
-    #Creates 'asker' using handle_nick(). It is the author's nickname 
-    #   if they have one. Otherwise, 'asker' is set to their name.
-    asker = handle_nick(ctx.message.author)
+    #Creates 'asker' using the 'display_name' method of User 
+    #   object. Returns server specific nickname if they have 
+    #   one, otherwise returns username
+    asker = ctx.message.author.display_name
     arg = deque(map(lambda s: s.strip(" "), ' '.join(polargs).split(",")))  #Separate the argument by commas
     title = arg.popleft()           #Parse the question from the options
     
@@ -260,6 +259,7 @@ async def poll(ctx, *polargs : str):
     #   so that people don't have to find the specific emojis themselves
     for e in randemoj:
         await bot.add_reaction(m, e)
+
 
 
 bot.run(token)

@@ -107,12 +107,13 @@ async def on_message(message):
         await bot.send_message(message.channel, msg)
 
 @bot.command(pass_context=True)
-async def echo(ctx):
-    print(ctx.message.content)
-
-
-@bot.command(pass_context=True)
 async def warmfuzzy(ctx, *usr:str):   
+    """Send a kind note to someone!
+
+    Sends a little kind message to someone on the server.
+    If you don't specify a person, it will pick on at random.
+    You can use server nicknames or usernames, but make sure you spell their name right!
+    """
     await bot.delete_message(ctx.message)
     users = list(bot.get_all_members())
     if usr:

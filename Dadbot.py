@@ -9,7 +9,7 @@ import asyncio
 description = '''A discord bot made and implemented (so far) by Alex Miranker. This bot was designed for use on very small servers and provides a few basic commands'''
 
 
-auth_filename = 'auth_token_testPollBot.tmp'
+auth_filename = 'auth_token_DadBot.tmp'
 
 if auth_filename == 'auth_token_DadBot.tmp':
     pref = '!'
@@ -101,9 +101,6 @@ async def on_message(message):
                 if len(you.split(' '))<3:
                     im_Dad = 'Nice to meet you, {0}. I\'m DadBot'.format(you.title())
                     await bot.send_message(message.channel, im_Dad) 
-    
-    yield from self.process_commands(message)
-    
 
 @bot.command(pass_context=True, hidden=True)
 async def clean(ctx):

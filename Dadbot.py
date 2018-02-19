@@ -111,7 +111,7 @@ async def warmfuzzy(ctx, *usr:str):
     """Send a kind note to someone!
 
     Sends a little kind message to someone on the server.
-    If you don't specify a person, it will pick on at random.
+    If you don't specify a person, it will pick one at random.
     You can use server nicknames or usernames, but make sure you spell their name right!
     """
     await bot.delete_message(ctx.message)
